@@ -3177,7 +3177,7 @@
             promiseOrWorker = promiseOrWorker();
         }
 
-        if (promiseOrWorker instanceof Promise) {
+        if (self.Promise && promiseOrWorker instanceof self.Promise) {
             const dummy_remote = { running: true };
             this.pending_remotes.push(dummy_remote);
             return promiseOrWorker.then((worker) => {
