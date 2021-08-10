@@ -2942,7 +2942,7 @@
     };
 
     Tests.prototype.all_done = function() {
-        return this.tests.length > 0 && test_environment.all_loaded &&
+        return test_environment.all_loaded &&
                 (this.num_pending === 0 || this.is_aborted) && !this.wait_for_finish &&
                 !this.processing_callbacks &&
                 !this.pending_remotes.some(function(w) { return w.running; });
@@ -3168,18 +3168,33 @@
         );
     };
 
-    Tests.prototype.fetch_tests_from_worker = function(worker) {
+    Tests.prototype.fetch_tests_from_worker = function(promiseOrWorker) {
         if (this.phase >= this.phases.COMPLETE) {
             return;
         }
 
-        var remoteContext = this.create_remote_worker(worker);
-        this.pending_remotes.push(remoteContext);
-        return remoteContext.done;
+        if (typeof promiseOrWorker === "function") {
+            promiseOrWorker = promiseOrWorker();
+        }
+
+        if (promiseOrWorker instanceof Promise) {
+            const dummy_remote = { running: true };
+            this.pending_remotes.push(dummy_remote);
+            return promiseOrWorker.then((worker) => {
+                dummy_remote.running = false;
+                var remoteContext = this.create_remote_worker(worker);
+                this.pending_remotes.push(remoteContext);
+                return remoteContext.done;
+            });
+        } else {
+            var remoteContext = this.create_remote_worker(promiseOrWorker);
+            this.pending_remotes.push(remoteContext);
+            return remoteContext.done;
+        }
     };
 
-    function fetch_tests_from_worker(port) {
-        return tests.fetch_tests_from_worker(port);
+    function fetch_tests_from_worker(promiseOrPort) {
+        return tests.fetch_tests_from_worker(promiseOrPort);
     }
     expose(fetch_tests_from_worker, 'fetch_tests_from_worker');
 
