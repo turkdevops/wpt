@@ -98,3 +98,58 @@ promise_test(t => fetchTest(t, {
   target: { port: kPorts.httpsPublic },
   expected: kFetchTestResult.success,
 }), "Treat-as-public-address secure context can fetch public subresource.");
+
+// Websocket tests.
+//
+// These tests verify that websockets are as-yet unaffected by the Private
+// Network Access implementation. Eventually, these will start asserting similar
+// results to the fetch tests above.
+
+promise_test(t => websocketTest(t, {
+  source: {
+    protocol: "https:",
+    port: kPorts.httpsLocal,
+  },
+  target: {
+    protocol: "wss:",
+    port: kPorts.wssLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Local secure context can open websocket connection to localhost.");
+
+promise_test(t => websocketTest(t, {
+  source: {
+    protocol: "https:",
+    port: kPorts.httpsPrivate,
+  },
+  target: {
+    protocol: "wss:",
+    port: kPorts.wssLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Private secure context can open websocket connection to localhost.");
+
+promise_test(t => websocketTest(t, {
+  source: {
+    protocol: "https:",
+    port: kPorts.httpsPublic,
+  },
+  target: {
+    protocol: "wss:",
+    port: kPorts.wssLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Public secure context can open websocket connection to localhost.");
+
+promise_test(t => websocketTest(t, {
+  source: {
+    protocol: "https:",
+    port: kPorts.httpsLocal,
+    treatAsPublicAddress: true,
+  },
+  target: {
+    protocol: "wss:",
+    port: kPorts.wssLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Treat-as-public secure context can open websocket connection to localhost.");

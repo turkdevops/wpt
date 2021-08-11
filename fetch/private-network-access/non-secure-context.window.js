@@ -139,3 +139,54 @@ promise_test(t => fetchTest(t, {
   },
   expected: kFetchTestResult.failure,
 }), "Public HTTPS non-secure context cannot fetch private subresource.");
+
+// Websocket tests.
+//
+// These tests verify that websockets are as-yet unaffected by the Private
+// Network Access implementation. Eventually, these will start asserting similar
+// results to the fetch tests above.
+
+promise_test(t => websocketTest(t, {
+  source: {
+    port: kPorts.httpLocal,
+  },
+  target: {
+    protocol: "ws:",
+    port: kPorts.wsLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Local non-secure context can open websocket connection to localhost.");
+
+promise_test(t => websocketTest(t, {
+  source: {
+    port: kPorts.httpPrivate,
+  },
+  target: {
+    protocol: "ws:",
+    port: kPorts.wsLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Private non-secure context can open websocket connection to localhost.");
+
+promise_test(t => websocketTest(t, {
+  source: {
+    port: kPorts.httpPublic,
+  },
+  target: {
+    protocol: "ws:",
+    port: kPorts.wsLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Public non-secure context can open websocket connection to localhost.");
+
+promise_test(t => websocketTest(t, {
+  source: {
+    port: kPorts.httpLocal,
+    treatAsPublicAddress: true,
+  },
+  target: {
+    protocol: "ws:",
+    port: kPorts.wsLocal,
+  },
+  expected: kWebsocketTestResult.success,
+}), "Treat-as-public non-secure context can open websocket connection to localhost.");
