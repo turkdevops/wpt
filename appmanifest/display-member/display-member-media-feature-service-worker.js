@@ -1,14 +1,17 @@
 // Some user agents only offer app installation if there is a SW and it handles
 // offline requests.
 
-const cacheVersion = "1.1";
+const cacheVersion = "1.2";
 const CACHE_NAME = `cache-v${cacheVersion}`;
 
 // The resources cached by this service worker.
 const resources = [
-  "file_handlers-member-manual-service-worker.js",
-  "file_handlers-member-manual.html",
-  "resources/file_handlers-member-manual.js",
+  "display-member-media-feature-browser-manual.html",
+  "display-member-media-feature-fullscreen-manual.html",
+  "display-member-media-feature-minimal-ui-manual.html",
+  "display-member-media-feature-standalone-manual.html",
+  "display-member-media-feature-service-worker.js",
+  "resources/display-member-media-feature-manual.js",
   "resources/icon.png",
 ];
 
