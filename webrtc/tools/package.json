@@ -8,7 +8,7 @@
   "devDependencies": {
     "eslint": "^8.0.0",
     "eslint-plugin-html": "^7.0.0",
-    "jscodeshift": "^0.13.1",
+    "jscodeshift": "^0.14.0",
     "jsdom": "^20.0.0"
   },
   "license": "BSD",
